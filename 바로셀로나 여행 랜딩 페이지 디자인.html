@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>바르셀로나를 만나보세요</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Montserrat', sans-serif;
+    }
+
+    body {
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    header {
+      background-color: #003366;
+      color: white;
+      text-align: center;
+      padding: 2rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      transition: transform 0.3s ease;
+    }
+
+    header h1:hover {
+      transform: scale(1.05);
+    }
+
+    .intro {
+      padding: 2rem;
+      text-align: center;
+      background-color: #fff;
+    }
+
+    .intro p {
+      max-width: 700px;
+      margin: 1rem auto;
+      line-height: 1.6;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      padding: 2rem;
+      background-color: #eee;
+    }
+
+    .gallery img {
+      width: 100%;
+      height: 500px;
+      object-fit: cover;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+
+    .activities {
+      padding: 2rem;
+      background-color: #fff;
+    }
+
+    .activities h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .activities ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      list-style: none;
+    }
+
+    .activities li {
+      background-color: #003366;
+      color: white;
+      padding: 1rem 2rem;
+      border-radius: 8px;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+      transition: transform 0.3s;
+    }
+
+    .activities li:hover {
+      transform: translateY(-5px);
+    }
+
+    .contact-form {
+      padding: 2rem;
+      background-color: #eee;
+    }
+
+    .contact-form h2 {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    form {
+      max-width: 600px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    input, textarea {
+      padding: 0.8rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 1rem;
+      background-color: #003366;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #005599;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      .activities ul {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>바르셀로나에 오신 것을 환영합니다</h1>
+  </header>
+
+  <section class="intro">
+    <h2>바르셀로나의 매력을 느껴보세요</h2>
+    <p>카탈루냐의 수도 바르셀로나는 예술과 건축, 그리고 지중해 해변으로 유명한 활기찬 도시입니다. 가우디의 걸작부터 활기찬 라람블라 거리까지, 이 도시는 모든 여행자에게 풍부한 문화적 경험을 선사합니다.</p>
+    <p>현지 시장을 탐방하고, 바닷가에서 휴식을 취하며, 수세기 동안 이어진 역사와 전통에 빠져보세요.</p>
+  </section>
+
+  <section class="gallery">
+    <img src="bsc.jpg" alt="바르셀로나 도시 풍경">
+    <img src="bsb.jpg" alt="바르셀로나 건축물">
+    <img src="bcb.jpg" alt="바르셀로나 해변">
+  </section>
+
+  <section class="activities">
+    <h2>바르셀로나에서 할 수 있는 체험</h2>
+    <ul>
+      <li>가우디 건축 투어</li>
+      <li>해변 요가</li>
+      <li>타파스 시식</li>
+      <li>몬주익 케이블카</li>
+      <li>플라멩코 공연</li>
+    </ul>
+  </section>
+
+  <section class="contact-form">
+    <h2>여행 예약 또는 문의</h2>
+    <form>
+      <input type="text" name="name" placeholder="이름" required>
+      <input type="email" name="email" placeholder="이메일 주소" required>
+      <input type="date" name="date" required>
+      <button type="submit">보내기</button>
+    </form>
+  </section>
+</body>
+</html>
