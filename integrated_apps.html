@@ -1,0 +1,450 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>통합 애플리케이션</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #1976d2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #e3f2fd;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #bbdefb;
+            margin-bottom: 20px;
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #bbdefb;
+            color: #1976d2;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+            transition: background-color 0.3s;
+        }
+        .tab.active {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+        .tab:hover {
+            background-color: #90caf9;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        h1, h2, h3 {
+            color: #1976d2;
+            text-align: center;
+        }
+        /* 가위바위보 스타일 */
+        .rps-buttons button {
+            padding: 10px 20px;
+            margin: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #1976d2;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .rps-buttons button:hover {
+            background-color: #1565c0;
+        }
+        #rps-result {
+            margin: 20px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #1976d2;
+            text-align: center;
+        }
+        #rps-history {
+            text-align: left;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f5faff;
+            border-radius: 5px;
+        }
+        #rps-history p {
+            margin: 5px 0;
+            color: #1976d2;
+        }
+        /* 달력 스타일 */
+        .calendar-inputs input {
+            padding: 8px;
+            margin: 10px;
+            font-size: 16px;
+            width: 100px;
+            background-color: #f5faff;
+            color: #1976d2;
+            border: 1px solid #bbdefb;
+            border-radius: 5px;
+        }
+        .calendar-inputs button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #1976d2;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+        .calendar-inputs button:hover {
+            background-color: #1565c0;
+        }
+        .calendar-table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 500px;
+        }
+        .calendar-table th, .calendar-table td {
+            border: 1px solid #bbdefb;
+            padding: 10px;
+            text-align: center;
+        }
+        .calendar-table th {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+        .calendar-table td {
+            height: 40px;
+            background-color: #f5faff;
+            color: #1976d2;
+        }
+        .calendar-table .empty {
+            background-color: #e3f2fd;
+        }
+        /* 시계 스타일 */
+        .clock-container {
+            text-align: center;
+            padding: 20px;
+        }
+        #clock-display {
+            font-size: 50px;
+            font-weight: bold;
+            color: #1976d2;
+            letter-spacing: 2px;
+        }
+        /* 계산기 스타일 */
+        .calculator {
+            background-color: #f5faff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin: 0 auto;
+        }
+        #calc-display {
+            width: 100%;
+            height: 50px;
+            font-size: 24px;
+            text-align: right;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            background-color: #e3f2fd;
+            color: #1976d2;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+        }
+        .calc-buttons button {
+            padding: 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #bbdefb;
+            color: #1976d2;
+            transition: background-color 0.3s;
+        }
+        .calc-buttons button:hover {
+            background-color: #90caf9;
+        }
+        .operator {
+            background-color: #1976d2;
+            color: #ffffff;
+        }
+        .operator:hover {
+            background-color: #1565c0;
+        }
+        .equals {
+            background-color: #42a5f5;
+            color: #ffffff;
+        }
+        .equals:hover {
+            background-color: #1e88e5;
+        }
+        .clear {
+            background-color: #ef5350;
+            color: #ffffff;
+        }
+        .clear:hover {
+            background-color: #e53935;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            #clock-display {
+                font-size: 40px;
+            }
+            .calculator {
+                width: 250px;
+            }
+            .calc-buttons button {
+                padding: 10px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>통합 애플리케이션</h1>
+        <div class="tabs">
+            <div class="tab active" onclick="showTab('rps')">가위바위보</div>
+            <div class="tab" onclick="showTab('calendar')">달력</div>
+            <div class="tab" onclick="showTab('clock')">시계</div>
+            <div class="tab" onclick="showTab('calculator')">계산기</div>
+        </div>
+
+        <!-- 가위바위보 -->
+        <div id="rps" class="tab-content active">
+            <h2>가위바위보 게임</h2>
+            <div class="rps-buttons">
+                <button onclick="play('가위')">가위</button>
+                <button onclick="play('바위')">바위</button>
+                <button onclick="play('보')">보</button>
+            </div>
+            <div id="rps-result"></div>
+            <div id="rps-history">
+                <h3>최근 5번 결과</h3>
+                <div id="rps-history-list"></div>
+            </div>
+        </div>
+
+        <!-- 달력 -->
+        <div id="calendar" class="tab-content">
+            <h2>달력 생성기</h2>
+            <div class="calendar-inputs">
+                <input type="number" id="year" placeholder="연도 (YYYY)" min="1900" max="9999">
+                <input type="number" id="month" placeholder="월 (MM)" min="1" max="12">
+                <button onclick="generateCalendar()">달력 생성</button>
+            </div>
+            <div id="calendar-output"></div>
+        </div>
+
+        <!-- 시계 -->
+        <div id="clock" class="tab-content">
+            <h2>실시간 디지털 시계</h2>
+            <div class="clock-container">
+                <div id="clock-display">00:00:00</div>
+            </div>
+        </div>
+
+        <!-- 계산기 -->
+        <div id="calculator" class="tab-content">
+            <h2>계산기</h2>
+            <div class="calculator">
+                <input type="text" id="calc-display" readonly value="0">
+                <div class="calc-buttons">
+                    <button class="clear" onclick="clearDisplay()">C</button>
+                    <button onclick="appendToDisplay('(')">(</button>
+                    <button onclick="appendToDisplay(')')">)</button>
+                    <button class="operator" onclick="appendToDisplay('÷')">÷</button>
+                    <button onclick="appendToDisplay('7')">7</button>
+                    <button onclick="appendToDisplay('8')">8</button>
+                    <button onclick="appendToDisplay('9')">9</button>
+                    <button class="operator" onclick="appendToDisplay('×')">×</button>
+                    <button onclick="appendToDisplay('4')">4</button>
+                    <button onclick="appendToDisplay('5')">5</button>
+                    <button onclick="appendToDisplay('6')">6</button>
+                    <button class="operator" onclick="appendToDisplay('-')">-</button>
+                    <button onclick="appendToDisplay('1')">1</button>
+                    <button onclick="appendToDisplay('2')">2</button>
+                    <button onclick="appendToDisplay('3')">3</button>
+                    <button class="operator" onclick="appendToDisplay('+')">+</button>
+                    <button onclick="appendToDisplay('0')">0</button>
+                    <button onclick="appendToDisplay('.')">.</button>
+                    <button class="equals" onclick="calculate()">=</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 탭 전환
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // 가위바위보 로직
+        const choices = ['가위', '바위', '보'];
+        let rpsHistory = [];
+        function getComputerChoice() {
+            const randomIndex = Math.floor(Math.random() * 3);
+            return choices[randomIndex];
+        }
+        function determineWinner(user, computer) {
+            if (user === computer) return '무승부';
+            if (
+                (user === '가위' && computer === '보') ||
+                (user === '바위' && computer === '가위') ||
+                (user === '보' && computer === '바위')
+            ) return '승';
+            return '패';
+        }
+        function play(userChoice) {
+            const computerChoice = getComputerChoice();
+            const result = determineWinner(userChoice, computerChoice);
+            const resultText = `당신: ${userChoice} / 컴퓨터: ${computerChoice} → 결과: ${result}`;
+            document.getElementById('rps-result').textContent = resultText;
+            rpsHistory.unshift(resultText);
+            if (rpsHistory.length > 5) rpsHistory.pop();
+            const historyList = document.getElementById('rps-history-list');
+            historyList.innerHTML = rpsHistory.map(item => `<p>${item}</p>`).join('');
+        }
+
+        // 달력 로직
+        function generateCalendar() {
+            const year = parseInt(document.getElementById('year').value);
+            const month = parseInt(document.getElementById('month').value) - 1;
+            if (!year || !month && month !== 0) {
+                alert('연도와 월을 입력하세요.');
+                return;
+            }
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const startDay = firstDay.getDay();
+            const totalDays = lastDay.getDate();
+            let table = `
+                <table class="calendar-table">
+                    <tr>
+                        <th>일</th><th>월</th><th>화</th><th>수</th><th>목</th><th>금</th><th>토</th>
+                    </tr>
+            `;
+            let day = 1;
+            let i = 0;
+            while (day <= totalDays) {
+                table += '<tr>';
+                for (let j = 0; j < 7; j++) {
+                    if (i < startDay || day > totalDays) {
+                        table += '<td class="empty"></td>';
+                    } else {
+                        table += `<td>${day}</td>`;
+                        day++;
+                    }
+                    i++;
+                }
+                table += '</tr>';
+            }
+            table += '</table>';
+            document.getElementById('calendar-output').innerHTML = table;
+        }
+
+        // 시계 로직
+        function updateClock() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            document.getElementById('clock-display').textContent = `${hours}:${minutes}:${seconds}`;
+        }
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // 계산기 로직
+        let calcDisplay = document.getElementById('calc-display');
+        function appendToDisplay(value) {
+            if (calcDisplay.value === '0' && value !== '.') {
+                calcDisplay.value = value;
+            } else {
+                calcDisplay.value += value;
+            }
+        }
+        function clearDisplay() {
+            calcDisplay.value = '0';
+        }
+        function calculate() {
+            try {
+                let expression = calcDisplay.value
+                    .replace('×', '*')
+                    .replace('÷', '/');
+                let result = eval(expression);
+                if (isFinite(result)) {
+                    calcDisplay.value = result;
+                } else {
+                    calcDisplay.value = 'Error';
+                }
+            } catch (e) {
+                calcDisplay.value = 'Error';
+            }
+        }
+    </script>
+</body>
+</html>
