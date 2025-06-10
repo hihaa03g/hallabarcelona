@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Team Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+    <!-- Font Awesome CDN for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Uicons Thin Chubby CDN for travel site icon -->
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-chubby/css/uicons-thin-chubby.css'>
+    <link rel='stylesheet' href='https://cdn-uicons.flaticon.com/3.0.0/uicons-thin-rounded/css/uicons-thin-rounded.css'>
+    <style>
+        @charset "UTF-8";
+
+        /* 깔끔한 화이트와 블루 테마 색상 변수 */
+        :root {
+        }
+
+        body {
+            padding-top: 80px;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            background-color: var(--white);
+            color: var(--text);
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--white);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 10px 0;
+        }
+
+        ul.gnb {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            background-color: var(--white);
+            border-bottom: 2px solid var(--border);
+        }
+
+        ul.gnb>li {
+            margin: 0 20px;
+        }
+
+        ul.gnb>li>a {
+            display: block;
+            padding: 15px 20px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: bold;
+            font-size: 17px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        ul.gnb>li>a:hover {
+            color: var(--white);
+            background-color: var(--blue);
+        }
+
+        section {
+            padding: 100px 0;
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        section img {
+            margin-bottom: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        section h1 {
+            margin-bottom: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        section p {
+            margin-bottom: 1.5rem;
+            margin-left: 1rem;
+        }
+
+
+        section h2 {
+            margin-bottom: 1.5rem;
+            margin-left: 1rem;
+        }
+
+
+        .logo {
+            width: 300px;
+            height: auto;
+            margin-bottom: 30px;
+        }
+
+        /* 팀 멤버 박스 스타일 */
+        .team-grid {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .member {
+            width: 30%;
+            background: var(--white);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+            margin-left: 1rem;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15), box-shadow 0.3s;
+        }
+        
+        .contact-member {
+            background-color: var(--white);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 1px 1px 6px rgba(0,0,0,0.05);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.15), box-shadow 0.3s;
+        }
+
+        .member:hover,.contact-member:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .member-icon {
+            color: var(--blue);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            margin-left: 0.5rem;
+        }
+
+        .skills {
+            margin-top: 0.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .skills-icon {
+            width: 40px;
+            height: auto;
+            transition: transform 0.3s ease;    
+        }
+        
+        .skill-icon:hover {
+            transform: scale(1.1);
+        }
+        /* 프로젝트 박스 스타일 */
+        .project-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-top: 30px;
+            padding: 20px;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+            margin-left: 1rem;
+        }
+
+        .project-box h3 {
+            display: inline-block;
+            margin-right: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .project-icon {
+            display: inline-block;
+            color: var(--blue);
+            font-size: 2rem;
+            margin-left: 1.5rem;
+            vertical-align: middle;
+        }
+
+        .project-box a {
+            display: inline-block;
+            margin-top: 10px;
+            margin-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--blue);
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .project-box a:hover {
+            color: var(--blue);
+            text-decoration: underline;
+        }
+
+        /* 연락처 박스 스타일 */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            padding: 1rem;
+        }
+
+        .contact-member {
+            background-color: var(--white);
+            padding: 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.05);
+            margin-left: 1rem;
+        }
+
+        #contact p a {
+            color: var(--blue);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        #contact p a:hover {
+            color: var(--blue);
+            text-decoration: underline;
+        }
+
+        footer {
+            text-align: center;
+            background-color: var(--dark-gray);
+            padding: 30px;
+            font-size: 14px;
+            color: var(--white);
+        }
+
+        .thank-you {
+            text-align: center;
+            font-size: 3.6rem;
+            color: var(--blue);
+            margin-top: 2rem;
+        }
+
+        #wave-animation {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(to right, var(--light-blue) 0%, var(--white) 50%);
+            position: relative;
+            overflow: hidden;
+        }
+
+       .wave {
+            position: absolute;
+            width: 100%;
+            height: 100px;
+            background: linear-gradient(to right, var(--white) 0%, var(--light-blue) 50%);
+            border-radius: 50% 50% 0 0;
+            bottom: 0;
+            animation: wave 4s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+        }
+
+    
+        @keyframes wave {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0); }
+        }
+
+       @media (max-width: 1980px) {
+            .skills .skill-icon {
+            width: 32px;
+            max-width: 32px;
+            height: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <!-- header -->
+        <header>
+            <nav>
+                <ul class="gnb">
+                    <li><a href="#home">HOME</a></li>
+                    <li><a href="#team">TEAM</a></li>
+                    <li><a href="#project">PROJECT</a></li>
+                    <li><a href="#contact">CONTACT</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <!-- home -->
+        <section id="home">
+            <img src="assets/png/hallalogo.jpg" alt="한라대학교 로고" class="logo">
+            <h1>CREATIVE WEB PROJECT</h1>
+            <p>이 프로젝트는 총 <strong>3명</strong>이 함께 기획하고 개발했습니다.</p>
+            <div id="wave-animation"></div>
+        </section>
+
+        <!-- team -->
+        <section id="team">
+            <h2>TEAM MEMBERS</h2>
+            <div class="team-grid">
+                <div class="member">
+                    <i class="fas fa-user member-icon" aria-hidden="true"></i>
+                    <h3>손호건</h3>
+                    <p>학번: 202034023</p>
+                    <p>역할: 사이트 기획 및 마크업 구현</p>
+                    <hr>
+                    </hr>
+                    <div class="skills">
+                        <img src="assets/svg/Unity.svg" alt="Unity" class="skill-icon">
+                        <img src="assets/svg/C.svg" alt="C" class="skill-icon">
+                        <img src="assets/svg/GitHub.svg" alt="GitHub" class="skill-icon">
+                    </div>
+                </div>
+                <div class="member">
+                    <i class="fas fa-user member-icon" aria-hidden="true"></i>
+                    <h3>강범서</h3>
+                    <p>학번: 202034001</p>
+                    <p>역할: 디자인 구성 및 UI 제작</p>
+                    <hr>
+                    </hr>
+                    <div class="skills">
+                        <img src="assets/svg/Android Studio.svg" alt="Android Studio" class="skill-icon">
+                        <img src="assets/svg/Figma.svg" alt="Figma" class="skill-icon">
+                        <img src="assets/svg/Kotlin.svg" alt="Kotlin" class="skill-icon">
+                    </div>
+                </div>
+                <div class="member">
+                    <i class="fas fa-user member-icon" aria-hidden="true"></i>
+                    <h3>이재욱</h3>
+                    <p>학번: 202034031</p>
+                    <p>역할: 콘텐츠 작성 및 배포</p>
+                    <hr>
+                    </hr>
+                    <div class="skills">
+                        <img src="assets/svg/HTML5.svg" alt="HTML5" class="skill-icon">
+                        <img src="assets/svg/CSS3.svg" alt="CSS3" class="skill-icon">
+                        <img src="assets/svg/Firebase.svg" alt="Firebase" class="skill-icon">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- project -->
+        <section id="project">
+            <h2>PROJECT SHOWCASE</h2>
+            <div class="project-box">
+                <h3>통합 애플리케이션<span class="project-icon"><i class="fi fi-tr-gamepad" aria-hidden="true"></i></span></h3>
+                <p>가위 바위 보 게임을 구현한 사이트입니다.</p>
+                <a href="https://hallabarcelona.netlify.app/integrated_apps.html" target="_blank">사이트 보기</a>
+            </div>
+            <div class="project-box">
+                <h3>여행 안내 사이트<span class="project-icon"><i class="fi fi-tc-plane" aria-hidden="true"></i></span></h3>
+                <p>바르셀로나의 여행을 도와주는 사이트입니다.</p>
+                <a href="https://hallabarcelona.netlify.app/" target="_blank">사이트 보기</a>
+            </div>
+        </section>
+
+        <!-- contact -->
+        <section id="contact">
+            <h2>CONTACT US</h2>
+            <p>문의 이메일: <a href="mailto:teamweb@univ.ac.kr">teamweb@univ.ac.kr</a></p>
+            <div class="contact-grid">
+                <div class="contact-member">
+                    <h3>손호건</h3>
+                    <p>이메일: mu6490@naver.com</p>
+                    <p>전화: 010-9455-6054</p>
+                </div>
+                <div class="contact-member">
+                    <h3>강범서</h3>
+                    <p>이메일: jejmb29@gmail.com</p>
+                    <p>전화: 010-2263-0175</p>
+                </div>
+                <div class="contact-member">
+                    <h3>이재욱</h3>
+                    <p>이메일: hihaa03@naver.com</p>
+                    <p>전화: 010-4732-6675</p>
+                </div>
+            </div>
+            <p class="thank-you">Thank You for Watching!</p>
+        </section>
+
+        <!-- footer -->
+        <footer>
+            <address>
+                본 페이지는 한라대학교 웹 프로그래밍 과제용으로 제작되었습니다.<br>
+                © 2025 Team Web Project. All Rights Reserved.
+            </address>
+        </footer>
+    </div>
+    <script>
+        const waveContainer = document.getElementById('wave-animation');
+        const waveCount = 5; // 파도의 개수
+        let waveInterval = 100; // 파도 간격
+
+        for (let i = 0; i < waveCount; i++) {
+            const wave = document.createElement('div');
+            wave.classList.add('wave');
+            wave.style.left = `${waveInterval}px`;
+            waveInterval += 200; // 다음 파도와의 간격
+
+            waveContainer.appendChild(wave);
+
+            // 각 파도의 애니메이션 타이밍을 다르게 설정
+            wave.style.animationDelay = `${Math.random() * 1.5}s`;
+        }
+
+    </script>
+</body>
+
+</html>
